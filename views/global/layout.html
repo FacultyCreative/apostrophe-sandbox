@@ -5,16 +5,18 @@
 {# Depending on your needs this is where you would create blocks that you can hook into from other templates, #}
 {# e.g. the extraBreadcrumbs block within the breadcrumbs block. #}
 
-{# DO NOT REMOVE. We pull these out for outerLayout and refresh operations #}
+{# DO NOT REMOVE THESE COMMENTS. We parse these for outerLayout and refresh operations #}
 <!-- APOS-BODY-CLASS {% block bodyClass %}{% endblock %} -->
 <!-- APOS-TITLE {% block title %}{% endblock %} -->
+<!-- APOS-EXTRA-HEAD {% block extraHead %}{% endblock %} -->
+<!-- APOS-SEO-DESCRIPTION {% block seoDescription %}{% endblock %} -->
 
 {% block header %}
   <div class="block header">
-    <div class="inner clearfix">
+    <div class="inner">
 
       <div class="main-navigation">
-        <a href="/" class="logo-container"></a>
+        <a href="/" class="logo"></a>
         {% block mainNav %}
           <ul class="tabs">
             {% for tab in page.tabs %}
@@ -75,32 +77,32 @@
 {# notice that this footer uses global areas: if we want editable content to appear on every page #}
 {# that inherits this one we want to use the global.areas object instead of the page.areas object. #}
 {% block footerBody %}
-  <footer class="block footer">
+  <footer class="footer">
     {% block footer %}
-    <div class="major">
+    <div class="major block">
       <div class="inner clearfix">
         <div class="column">
-          {{ aposArea({ slug: 'global:footerContent1', area: global.areas.footerContent1, edit: edit, controls: ['style', 'italic', 'createLink'] }) }}
+          {{ aposArea(global, 'footerContent1', { textOnly: true, controls: ['style', 'italic', 'createLink'] }) }}
         </div>
         <div class="column">
-          {{ aposArea({ slug: 'global:footerContent2', area: global.areas.footerContent2, edit: edit, controls: ['style', 'italic', 'createLink'] }) }}
+          {{ aposArea(global, 'footerContent2', { textOnly: true, controls: ['style', 'italic', 'createLink'] }) }}
         </div>
         <div class="column">
-          {{ aposArea({ slug: 'global:footerContent3', area: global.areas.footerContent3, edit: edit, controls: ['style', 'italic', 'createLink'] }) }}
+          {{ aposArea(global, 'footerContent3', { textOnly: true, controls: ['style', 'italic', 'createLink'] }) }}
         </div>
       </div>
     </div>
-    <div class="minor">
+    <div class="minor block">
       <div class="inner clearfix">
         <div class="column footer-text">WEBSITES, NOT COFFEE</div>
         <div class="column">
           <div class="footer-logos">
-            <a href="http://twitter.com/punkave"><div class="twitter-logo"></div></a>
-            <a href="http://punkave.com"><div class="punk-logo"></div></a>
-            <a href="http://facebook.com/punkave"><div class="facebook-logo"></div></a>
+            <a class="twitter-logo footer-logo" href="http://twitter.com/punkave"></a>
+            <a class="punk-logo footer-logo" href="http://punkave.com"></a>
+            <a class="facebook-logo footer-logo" href="http://facebook.com/punkave"></a>
           </div>
         </div>
-        <div class="column footer-text">COPYRIGHT &amp; PRIVACY POLICY</div>
+        <div class="column footer-text right-align">COPYRIGHT &amp; PRIVACY POLICY</div>
       </div>
     </div>
     {% endblock %}

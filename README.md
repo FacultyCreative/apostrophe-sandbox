@@ -8,15 +8,17 @@ Apostrophe 2 is our new implementation of Apostrophe for [node.js](http://nodejs
 
 ## Installation
 
+We've been using Homebrew to install the Apostrophe dev environment. Here's a how to on installing the bare minimum: [Homebrew Apostrophe Install](https://gist.github.com/kylestetz/7771127)
+
 Run `npm install` to install the required dependencies.
 
-In addition you must have:
+If you're not using Homebrew or you already have a dev environment, just make sure you have:
 
 * [node](http://nodejs.org/), of course. You must have at least version `0.10`
 * [mongodb](http://www.mongodb.org/) **version 2.2 or better**, on your local machine (or point to another database server)
 * imagemagick, to resize uploaded images (specifically the `convert` and `identify` command line tools)
 
-Mac developers can install imagemagick via MacPorts. Your production server will need it too; it's probably a simple `apt-get install` or `yum` command away. Heroku includes imagemagick as standard equipment. MacPorts is also a great option for installing node and mongodb. Also consider Homebrew.
+Mac developers can install imagemagick via Homebrew or MacPorts. Your production server will need it too; it's probably a simple `apt-get install` or `yum` command away. Heroku includes imagemagick as standard equipment.
 
 ## Configuration
 
@@ -92,29 +94,40 @@ Apostrophe's page templates are in the `views` subdirectory. These templates are
 
 Apostrophe offers a choice of page templates to the user when adding a page via the "Pages" menu. Adding a new one is straightforward. Just copy the `default.html` template in the `views` folder. Let's assume you call your template `myPage.html`.
 
-Next edit `app.js` and introduce your template in two places:
+Next edit `app.js`. This file consists mostly of options to be passed to `apostrophe-site`, a convenient way of configuring an Apostrophe-powered website. Look for the `pages` option, and the `types` option nested within that:
 
-1. In the `initAposPages` function, where the simple page types found in the `views` folder are configured, add a new entry:
+    pages: {
+      types: [
+        { name: 'default', label: 'Default (Two Column)' },
+        { name: 'onecolumn', label: 'One Column' },
+        { name: 'marquee', label: 'Marquee' },
+        { name: 'home', label: 'Home Page' },
+        { name: 'blog', label: 'Blog' },
+        { name: 'map', label: 'Map' },
+        { name: 'sections', label: 'Sections' }
+      ]
+    },
 
-        var pageTypes = [
-          { name: 'default', label: 'Default (Two Column)' },
-          { name: 'onecolumn', label: 'One Column' },
-          { name: 'home', label: 'Home Page' },
-          { name: 'largeSlideshow', label: 'Large Slideshow' },
-          { name: 'myPage', label: 'My Page' }
-        ];
+You can add a new entry:
 
-2. In the `initAposPagesMenu` function, where the final order of all of the available page types is decided. Here I've chosen to add it with the other simple page types at the top of the menu:
+    pages: {
+      types: [
+        { name: 'default', label: 'Default (Two Column)' },
+        { name: 'onecolumn', label: 'One Column' },
+        { name: 'marquee', label: 'Marquee' },
+        { name: 'home', label: 'Home Page' },
+        { name: 'blog', label: 'Blog' },
+        { name: 'map', label: 'Map' },
+        { name: 'sections', label: 'Sections' },
+        { name: 'myPage', label: 'My Page' }
+      ]
+    },
 
-        var pageTypesMenu = [
-          { name: 'default', label: 'Default (Two Column)' },
-          { name: 'onecolumn', label: 'One Column' },
-          { name: 'home', label: 'Home Page' },
-          { name: 'largeSlideshow', label: 'Large Slideshow' },
-          { name: 'myPage', label: 'My Page' }
-        ];
+Now restart the app. Since each node app is its own webserver, you'll need to get used to that. Tools like `nodemon` and `always` are useful for automatically restarting apps. Just keep in mind that they only pay attention to changes in server-side `.js` files.
 
-3. Restart the app. Since each node app is its own webserver, you'll need to get used to that. Tools like `nodemon` and `always` are useful for automatically restarting apps. Just keep in mind that they only pay attention to changes in server-side `.js` files.
+## Advanced Configuration ##
+
+Check out the [apostrophe-site module documentation](http://github.com/punkave/apostrophe-site) for more information about other configuration options for your site, including adding additional Apostrophe modules like the blog, the events module and more.
 
 For more advanced information about page types, including how to write page loader functions on the server side that summon custom data and create experiences like our blog and map pages, see the [apostrophe-pages module documentation](http://github.com/punkave/apostrophe-pages). If your needs are similar to our [apostrophe-blog](http://github.com/punkave/apostrophe-blog) or [apostrophe-map](http://github.com/punkave/apostrophe-map) modules, check out the [apostrophe-snippets](http://github.com/punkave/apostrophe-snippets) module to see how we've created a foundation for those modules that minimizes the amount of unique code needed in each one.
 
@@ -124,9 +137,9 @@ You'll notice that the various pages contain editable content areas. There are t
 
 Here's an example of template code to insert a named area that lives in the current page:
 
-    {{ aposArea({ slug: slug + ":content1", area: page.areas.content1, edit: edit }) }}
+    {{ aposArea(page, 'content1') }}
 
-`slug`, `page` and `edit` are variables made available to page templates by Apostrophe. The `slug` variable refers to the path of this particular page within the site, while the `page` variable contains the current contents of the page in its `areas` property. The `edit` indicates whether the current user is allowed to edit the page or not. Adding ":content1" to the slug indicates that we are addressing a particular named content area within the page.
+The `page` object is made available to your page templates by Apostrophe. The name `content1 indicates that we are addressing a particular named content area within the page.
 
 For more advanced documentation, including how to add singletons or limit the controls displayed in an area, see the [apostrophe module documentation](http://github.com/punkave/apostrophe).
 
@@ -137,6 +150,7 @@ Apostrophe 2 is changing fast at this early stage. The `npm update` command will
 ## More Modules, More Documentation
 
 See [apostrophe](http://github.com/punkave/apostrophe),
+[apostrophe-site](http://github.com/punkave/apostrophe-site),
 [apostrophe-pages](http://github.com/punkave/apostrophe-pages),
 [apostrophe-snippets](http://github.com/punkave/apostrophe-snippets),
 [apostrophe-blog](http://github.com/punkave/apostrophe-blog),

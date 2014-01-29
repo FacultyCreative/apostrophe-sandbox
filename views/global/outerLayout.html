@@ -19,46 +19,38 @@
 
           {# edit === can edit THIS page #}
           {{ aposPagesMenu({ page: page, edit: edit }) }}
-
-          {# permissions.edit === can edit, potentially, somewhere #}
-          {{ aposSnippetMenu({ edit: permissions.edit }) }}
           {{ aposBlogMenu({ edit: permissions.edit }) }}
-          {{ aposEventsMenu({ edit: permissions.edit }) }}
           {{ aposMapMenu({ edit: permissions.edit }) }}
-
-          {# Granting these to non-admins allows them to admin-ify #}
-          {# themselves and make more accounts, so don't do that. -Tom #}
           {{ aposPeopleMenu({ edit: permissions.admin }) }}
           {{ aposGroupsMenu({ edit: permissions.admin }) }}
+          {{ aposMediaMenu({ edit: permissions.guest })}}
+          {{ aposTagsMenu({ edit: permissions.admin }) }}
 
-          {{ aposMediaMenu({ edit: permissions.edit })}}
-
-          {% if user %}
+          {% if edit %}
             <div class="apos-admin-bar-item apos-preview-toggle">
               <i class="icon-eye"></i>
               <i class="icon-wrench"></i>
             </div>
           {% endif %}
 
-          <!-- <div class="apos-admin-bar-item apos-search">
-            <form action="/search">
-              {# Please do not put back a default value here unless #}
-              {# you have an implementation that really works for typical #}
-              {# user interactions like selecting it or typing over it. -Tom #}
-              Search: <input type="text" name="q" value="" class="search-field" />
-              <input type="submit" class="search-submit" value="Go" />
-            </form>
-          </div> -->
-
-          <div class="apos-admin-bar-item login-status">
-            {% if user %}
-              <a class="apos-button " href="/logout">
-                <span class="apos-who">{{ user.title }}</span>Log Out
-              </a>
-            {% else %}
+          {% if user %}
+            <ul class="apos-admin-bar-item apos-accordion-menu apos-my-account">
+              <li class="apos-accordion-title"><i class="person"></i> My Account</li>
+              <li class="apos-accordion-items">
+                <ul class="apos-page-bar">
+                  {# Doesn't appear for hardcoded accounts that cannot be edited #}
+                  {% if user._mongodb and permissions.guest %}
+                    <li href="#" class="apos-control apos-accordion-item apos-button" data-edit-profile>My Profile</li>
+                  {% endif %}
+                  <li href="#" class="apos-control apos-accordion-item apos-button"><a href="/logout">Log Out</a></li>
+                </ul>
+              </li>
+            </ul>
+          {% else %}
+            <div class="apos-admin-bar-item login-status">
               <a class="apos-button " href="/login">Log In to Edit</a>
-            {% endif %}
-          </div>
+            </div>
+          {% endif %}
         </div>
       </div>
     {% endif %}
